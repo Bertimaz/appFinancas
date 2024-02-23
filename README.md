@@ -1,2 +1,2 @@
 # appFinancas
-Aplicativo para gerenciar gastos da família
+giAplicativo para gerenciar gastos da família
