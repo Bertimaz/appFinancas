@@ -82,7 +82,7 @@ target/
 password.YAML
 
 #config
-cofing.py
+config.py
 
 # IPython
 profile_default/
