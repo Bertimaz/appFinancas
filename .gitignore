@@ -79,7 +79,7 @@ target/
 .ipynb_checkpoints
 
 #password YML
-password.YAML
+config.yaml
 
 #config
 config.py
