@@ -32,12 +32,41 @@ def update_entry(table_name,custom_condition, new_data):
 
     # Commit the changes
     conn.commit()
+    conn.close()
 
-if __name__ == "__main__":
+def create_user(nome,cpf,senha,email):
+    """
+    Create a new user
+
+    Parameters:
+    - nome: nome  e sobrenome do usuario
+    - cpf: no formato XXXXXXXXXXX, numero de 9 algarismos
+    - senha
+    - email
+
+    
     # Example usage
-    custom_condition = {"id": 1}  # Example custom condition
-    new_data = {"name": "Updated Name", "age": 30}  # Example new data
+    create_user('Albert Mazuz',00000000000,00000,'aaaa@aaaa.com.br')
+    """
+    #Validacoes
+    tools.validate_cpf(cpf)       
+    tools.validate_email(email)
+    #Conecntando
+    conn,cursor=db_connections.get_database_connection(True)
+    # Construct the SQL query based on the custom condition
+    query = f"""INSERT INTO financas.dim.usuario  (nome,cpf,senha,email)
+      VALUES ('{nome}', '{cpf}','{senha}','{email}')"""
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+   
 
-    update_entry('nome',custom_condition, new_data)
+    
 
+
+    # INSERT INTO cars (brand, model, year)
+# VALUES ('Ford', 'Mustang', 1964); 
+# )
+
+create_user('teste','10000000000',00000,'teste@teste.com.br')
    

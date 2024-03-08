@@ -1,6 +1,8 @@
 import logging
 import os
 from datetime import datetime
+import re
+
 
 def configure_logger(log_folder):
     # Create a logger
@@ -28,24 +30,40 @@ def configure_logger(log_folder):
 
     return logger
 
-if __name__ == "__main__":
-    # Configure and create a logger
-    logger = configure_logger()
+def validate_cpf(cpf):
+  """
+  This function validates if the input is a 9-digit number.
 
-    try:
-        # Your code here
-        logger.info("Program started")
+  Args:
+      cpf numero de CPF como string.
 
-        # Example log messages
-        logger.debug("This is a debug message")
-        logger.info("This is an info message")
-        logger.warning("This is a warning message")
-        logger.error("This is an error message")
-        logger.critical("This is a critical message")
+  Raises:
+      ValueError: 'cpf precisar ser um inteiro'
+      ValueError: 'cpf precisar ter 11 digitos'
+  """
+  cpf=str(cpf)
+  try:
+    int(cpf)
+  except:
+    raise ValueError('cpf precisar ser um inteiro')
+  
+  if len(cpf) != 11:
+    raise ValueError('cpf precisar ter 11 digitos')
+  return True
+  
+ 
 
-        # Your code here
-        logger.info("Program completed")
 
-    except Exception as e:
-        # Log any exceptions
-        logger.exception(f"An error occurred: {e}")
+def validate_email(email):
+  """
+  This function validates email format using regular expressions.
+
+  Args:
+      email: The email address to validate.
+
+  Returns:
+      True if the email format is valid, False otherwise.
+  """
+  pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+  return(re.match(pattern, email))
+

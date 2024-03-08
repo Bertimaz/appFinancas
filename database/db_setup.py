@@ -16,14 +16,14 @@ class DatabaseManager:
         #Create a log
         logger=configure_logger(r'database\logs')
         
-        #Connect to DB
-        logger.info('Connecting to DB')
+        #Connect to Postgres
+        logger.info('Connecting to Postgres')
         try:
             connection,cursor=get_database_connection()
             # Create a cursor object to execute SQL commands
             cursor = connection.cursor()
         except Exception as e:
-            logger.critical(f'Erro ao conectar ao DB. Erro: {e}')
+            logger.critical(f'Erro ao conectar ao PostGres. Erro: {e}')
             quit()
 
         # Use the psycopg2.sql.SQL class to create the database for safer SQL string formatting
@@ -38,6 +38,21 @@ class DatabaseManager:
         except psycopg2.errors.DuplicateDatabase:
             logger.info(f'database {dbname} already exists')
             print(f'database {dbname} already exists')
+        connection.commit()
+        connection.close()
+
+        #Connect to DB
+        logger.info('Connecting to DB')
+        try:
+            connection,cursor=get_database_connection(True)
+            # Create a cursor object to execute SQL commands
+            cursor = connection.cursor()
+        except Exception as e:
+            logger.critical(f'Erro ao conectar ao DB. Erro: {e}')
+            quit()
+
+
+
         ### CREATE Schema Fato
         create_db_query = sql.SQL(" CREATE SCHEMA fato"
         )
@@ -83,8 +98,8 @@ class DatabaseManager:
         create_db_query = sql.SQL("CREATE TABLE dim.usuario ("
             "  ID SERIAL PRIMARY KEY,"
             " nome varchar(255) NOT NULL,"
-            " cpf int NOT NULL,"
-            " senha VARCHAR(255) NOT NULL,"
+            " cpf varchar(20) NOT NULL,"
+            " senha VARCHAR(255) NOT NULL," ##preciso criptografar
             " email VARCHAR(255) NOT NULL"
             ")" 
         )  
