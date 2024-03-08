@@ -1,6 +1,6 @@
-import tools
-import config
-import db_connections
+from database import tools
+from database import config
+from database import db_connections
 from psycopg2 import sql
 
 def update_entry(table_name,custom_condition, new_data):
@@ -59,6 +59,9 @@ def create_user(nome,cpf,senha,email):
     cursor.execute(query)
     conn.commit()
     conn.close()
+
+def login(user_name,user_password):
+    return True
    
 
     
