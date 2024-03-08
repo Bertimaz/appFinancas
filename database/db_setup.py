@@ -1,10 +1,12 @@
-import pandas as pd
+"""
+Module that sets up the database
+"""
 from tools import configure_logger
 import psycopg2
 from psycopg2 import sql
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-import config
 from db_connections import get_database_connection
+
+
 
 class DatabaseManager:
     def __init__(self):
@@ -12,7 +14,8 @@ class DatabaseManager:
 
     def create_database(self, dbname):
         #Create a log
-        logger=configure_logger('database\logs')        
+        logger=configure_logger(r'database\logs')
+        
         #Connect to DB
         logger.info('Connecting to DB')
         try:
@@ -35,8 +38,7 @@ class DatabaseManager:
         except psycopg2.errors.DuplicateDatabase:
             logger.info(f'database {dbname} already exists')
             print(f'database {dbname} already exists')
-       
-        ### CREATE Schem Fato
+        ### CREATE Schema Fato
         create_db_query = sql.SQL(" CREATE SCHEMA fato"
         )
         logger.info('Creating Schema fato')
@@ -48,7 +50,6 @@ class DatabaseManager:
         except psycopg2.errors.DuplicateSchema:
             print('Schema fato Already Exists')
             logger.info('Schema fato Already Exists')
-
               
         ### CREATE Schema DIM
         create_db_query = sql.SQL(" CREATE SCHEMA dim"
@@ -63,7 +64,7 @@ class DatabaseManager:
             print('Schema dim Already Exists')
             logger.info('Schema dim Already Exists')
     
-        tables=['fato.gastos', 'fato.aportes','dim.usuarios','dim.contas', 'dim.contaUsuario']
+        tables=['fato.transacao' ,'dim.usuario','dim.conta', 'dim.contaUsuario','dim.cartao','dim.cartaousuario']
         
         # Deleting tables
         logger.info(f'Deleting tables:{tables}')
@@ -77,21 +78,21 @@ class DatabaseManager:
             except Exception as e:
                 logger.warning(f'Error on droping. {e}')
 
-        # Create Table Usuarios 
-        logger.info('Creating table dim.usuarios')
-        create_db_query = sql.SQL("CREATE TABLE dim.usuarios ("
-            "  id SERIAL PRIMARY KEY,"
+        # Create Table usuario 
+        logger.info('Creating table dim.usuario')
+        create_db_query = sql.SQL("CREATE TABLE dim.usuario ("
+            "  ID SERIAL PRIMARY KEY,"
             " nome varchar(255) NOT NULL,"
-            " cpf int,"
+            " cpf int NOT NULL,"
             " senha VARCHAR(255) NOT NULL,"
             " email VARCHAR(255) NOT NULL"
             ")" 
         )  
         try:
-            # Execute the SQL command to create the table dimusuarios
+            # Execute the SQL command to create the table dim.usuario
             cursor.execute(create_db_query)
-            print('table dim.usuarios created')
-            logger.info('table dim.usuarios created')
+            print('table dim.usuario created')
+            logger.info('table dim.usuario created')
         except psycopg2.errors.DuplicateTable:
             print('table dim.usuario already exists')
             logger.info('table dim.usuario already exists')
@@ -99,90 +100,115 @@ class DatabaseManager:
             logger.info(f'Unkown Error: {e}')
 
 
-        #Criar table dim.contas
-        logger.info('Creating table dim.contas')
-        create_db_query = sql.SQL("CREATE TABLE dim.contas ("
-            "id INT PRIMARY KEY,"
-            " banco varchar(255) NOT NULL,"
+        #Criar table dim.conta
+        logger.info('Creating table dim.conta')
+        create_db_query = sql.SQL("CREATE TABLE dim.conta ("
+            "ID INT PRIMARY KEY,"
+            " banco varchar(255) NOT NULL,"   
             " agencia VARCHAR(255) NOT NULL,"
-            " conta int NOT NULL"
+            " conta int NOT NULL"   # Preciso criptografar
             ")" 
         )
         try:
             # Execute the SQL command to create the table dim.contas
             cursor.execute(create_db_query)
-            print('table dim.contas created')
-            logger.info('table dim.contas created')
+            print('table dim.conta created')
+            logger.info('table dim.conta created')
         except psycopg2.errors.DuplicateTable:
             print('table dim.contas already exists')
-            logger.info('table dim.contas already exists')
+            logger.info('table dim.conta already exists')
         except Exception as e:
             logger.info(f'Unkown Error: {e}')
 
-        # Create Table fato.gastos
-        create_db_query = sql.SQL("CREATE TABLE fato.gastos ("
-            "  id SERIAL PRIMARY KEY,"
-            " data DATE,"
-            " ref VARCHAR(255),"
-            " ref_fonte VARCHAR(255),"
-            " valor FLOAT,"
-            "categoria VARCHAR(255),"
-            "data_inclusao Date,"
-            "conta INT REFERENCES dim.contas(id),"
-            "obs varchar(255)"
-            ")" 
-        )
-        logger.info('Creating table fato.gastos')
-        try:
-            # Execute the SQL command to create the table gastos
-            cursor.execute(create_db_query)
-            logger.info('table fato.gastos created')
-            print('table fato.gastos created')
-        except psycopg2.errors.DuplicateTable:
-            print('table fato.gastos already exists')
-            logger.info('table fato.gastos already exists')
-            pass
-        except Exception as e:
-            logger.info(f'Unknown error: {e}')
-
-        # Create table fato.aportes
-        create_db_query = sql.SQL("CREATE TABLE fato.aportes ("
-            "  id SERIAL PRIMARY KEY,"
-            " data DATE,"
-            " pagante_id INT REFERENCES dim.usuarios(id),"
-            " valor FLOAT,"
-            "data_inclusao Date"
-            ")"       
-        )
-        logger.info('Creating table fato.aportes')
-        try:
-            # Execute the SQL command to create the table aportes
-            cursor.execute(create_db_query)
-            print('table fato.aportes created')
-            logger.info('table fato.aportes created')
-        except psycopg2.errors.DuplicateTable:
-            print('table fato.aportes already exists')
-            logger.info('table fato.aportes already exists')
-        except Exception as e:
-            logger.info(f'Unkown Error: {e}')   
-            
-        #Criar table dim.contaUsuario
-        create_db_query = sql.SQL("CREATE TABLE dim.contaUsuario ("
-            " id int PRIMARY KEY,"
-            " usuarioId INT REFERENCES dim.usuarios(id),"
-            " contaId INT REFERENCES dim.contas(id)"
+         #Criar table dim.cartao
+        create_db_query = sql.SQL("CREATE TABLE dim.cartao ("
+            " ID int PRIMARY KEY,"
+            " usuario_ID INT REFERENCES dim.usuario(ID),"
+            " credit_card_number INT NOT NULL,"  # Preciso criptografar
+            " flag VARCHAR(255) NOT NULL,"
+            "expiration_date DATE NOT NULL"
             ")"
         )
         try:
-            # Execute the SQL command to create the table contas
+            # Execute the SQL command to create the table cartao
             cursor.execute(create_db_query)
-            print('table dim.contas created')
-            logger.info('table dim.contas created')
+            print('table dim.cartao created')
+            logger.info('table dim.cartao created')
         except psycopg2.errors.DuplicateTable:
-            print('table dim.contas already exists')
-            logger.info('table dim.contas already exists')
+            print('table dim.cartao already exists')
+            logger.info('table dim.cartao already exists')
         except Exception as e:
             logger.warning(f'Unkown Error: {e}')
+
+
+        # Create Table fato.transacao
+        create_db_query = sql.SQL("CREATE TABLE fato.transacao ("
+            " ID SERIAL PRIMARY KEY,"
+            " data DATE NOT NULL,"
+            " ref_fonte VARCHAR(255) NOT NULL,"
+            " ref VARCHAR(255),"
+            " valor FLOAT NOT NULL,"
+            " tipo_transacao VARCHAR (20) NOT NULL,"
+            " categoria VARCHAR(255) NOT NULL,"
+            " data_inclusao Date,"
+            " conta_ID INT REFERENCES dim.conta(ID),"
+            " credit_card_ID INT REFERENCES dim.cartao(ID),"
+            " obs varchar(255)"
+            ")" 
+        )
+        logger.info('Creating table fato.transacao')
+        try:
+            # Execute the SQL command to create the table fato.transacao
+            cursor.execute(create_db_query)
+            logger.info('table fato.transacao created')
+            print('table fato.transacao created')
+        except psycopg2.errors.DuplicateTable:
+            print('table fato.transacao already exists')
+            logger.info('table fato.transacao already exists')
+            pass
+        except Exception as e:
+            logger.info(f'Unknown error: {e}')
+ 
+        #Criar table dim.contaUsuario
+        create_db_query = sql.SQL("CREATE TABLE dim.contaUsuario ("
+            " ID int PRIMARY KEY,"
+            " usuario_ID INT REFERENCES dim.usuario(ID),"
+            " contaId INT REFERENCES dim.conta(ID)"
+            ")"
+        )
+        logger.info('Creating table dim.contaUsuario')
+        try:
+            # Execute the SQL command to create the table dim.contaUsuario
+            cursor.execute(create_db_query)
+            print('table dim.contaUsuario created')
+            logger.info('table dim.contaUsuario created')
+        except psycopg2.errors.DuplicateTable:
+            print('table dim.contaUsuario already exists')
+            logger.info('table dim.contaUsuario already exists')
+        except Exception as e:
+            logger.warning(f'Unkown Error: {e}')
+
+       
+     #Criar table dim.cartaoUsuario
+        create_db_query = sql.SQL("CREATE TABLE dim.cartaoUsuario ("
+            " ID int PRIMARY KEY,"
+            " usuario_ID INT REFERENCES dim.usuario(ID),"
+            " cartao_ID INT REFERENCES dim.cartao(ID)"
+            ")"
+        )
+        logger.info('Creating table dim.cartaoUsuario')
+        try:
+            # Execute the SQL command to create the table dim.cartaoUsuario
+            cursor.execute(create_db_query)
+            print('table dim.cartaoUsuario created')
+            logger.info('table dim.cartaoUsuario created')
+        except psycopg2.errors.DuplicateTable:
+            print('table dim.cartaoUsuario already exists')
+            logger.info('table dim.cartaoUsuario already exists')
+        except Exception as e:
+            logger.warning(f'Unkown Error: {e}')
+
+
 
         # Close the cursor and connection
         cursor.close()

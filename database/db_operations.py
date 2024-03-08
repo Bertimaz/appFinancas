@@ -3,7 +3,7 @@ import config
 import db_connections
 from psycopg2 import sql
 
-def update_entry(connection_params, custom_condition, new_data):
+def update_entry(table_name,custom_condition, new_data):
     """
     Update an entry in the database based on a custom condition.
 
@@ -18,18 +18,26 @@ def update_entry(connection_params, custom_condition, new_data):
     update_entry(custom_condition, new_data)
     """
     # Establish a connection to the database
-    conn,cursor=db_connections.get_database_connection
+    conn,cursor=db_connections.get_database_connection()
 
     # Construct the SQL query based on the custom condition
-    query = sql.SQL("UPDATE your_table SET {} WHERE {}").format(
-    sql.SQL(', ').join(sql.SQL('{} = %s').format(sql.Identifier(col)) for col in new_data.keys()),
-    sql.SQL(' AND ').join(sql.SQL('{} = %s').format(sql.Identifier(col)) for col in custom_condition.keys())
-    )
-
+    query = sql.SQL("UPDATE table {table} SET {set_columns} WHERE {conditions}").format(
+    table=sql.Identifier(table_name),
+    set_columns=sql.SQL(', ').join(sql.SQL('{} = %s').format(sql.Identifier(col)) for col in new_data.keys()),
+    conditions=sql.SQL(' AND ').join(sql.SQL('{} = %s').format(sql.Identifier(col)) for col in custom_condition.keys())
+)
+    print(query)
     # Execute the query
     cursor.execute(query, list(new_data.values()) + list(custom_condition.values()))
 
     # Commit the changes
-    connection.commit()
+    conn.commit()
+
+if __name__ == "__main__":
+    # Example usage
+    custom_condition = {"id": 1}  # Example custom condition
+    new_data = {"name": "Updated Name", "age": 30}  # Example new data
+
+    update_entry('nome',custom_condition, new_data)
 
    
