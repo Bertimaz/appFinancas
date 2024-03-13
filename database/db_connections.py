@@ -2,7 +2,7 @@
 Module that manages db connections
 """
 
-from database import config
+import config
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 

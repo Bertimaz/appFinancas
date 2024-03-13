@@ -96,7 +96,8 @@ class DatabaseManager:
         # Create Table usuario 
         logger.info('Creating table dim.usuario')
         create_db_query = sql.SQL("CREATE TABLE dim.usuario ("
-            "  ID SERIAL PRIMARY KEY,"
+            " ID SERIAL PRIMARY KEY,"
+            " nome_usuario varchar(255) UNIQUE,"
             " nome varchar(255) NOT NULL,"
             " cpf varchar(20) NOT NULL,"
             " senha VARCHAR(255) NOT NULL," ##preciso criptografar
