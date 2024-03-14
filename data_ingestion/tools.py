@@ -21,8 +21,10 @@ def get_accountId_from_fileName(file_name):
     underscore_index=file_name.find('_')
     dot_index=file_name.find('.')
     if underscore_index!=-1 and dot_index!=-1:
-        return file_name[underscore_index:dot_index]
-    elif underscore_index=-1:
+        return file_name[underscore_index+1:dot_index]
+    elif underscore_index==-1:
         raise ValueError('file name is in the wrong format. There is no underscore')
-    elif underscore_index=-1:
+    elif underscore_index==-1:
         raise ValueError('file name is in the wrong format. There is no dot')
+    
+
