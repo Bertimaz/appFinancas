@@ -5,9 +5,9 @@ class Pipeline:
     ----------
     type: str
         Define what type of extraction. Options: csv
-    extract_addres : str
+    origin_path: str
         address of the extraction data
-    load_address: str
+    load_path: str
         Address of the load table
 
     Methods
@@ -16,18 +16,31 @@ class Pipeline:
     tranform()
     load()
     """
+    def get_userId_from_fileName(file_name):
+        """
+        Example usage:
+        input_string = "1_2.xls"
+        result = get_prefix_before_underscore(input_string)
+        print(result)  # Output will be: 1
+        """
+        underscore_index=file_name.find('_')
+        if underscore_index!=-1:
+            return file_name[:underscore_index]
+        else:
+            raise ValueError('file name is in the wrong format. There is no underscore')
+
+
+
     def __init__(self) -> None:
-
         self.df=None
-    def extract(origin_path):
-        # file_path-''
-        # data = pd.read_csv(file_path)
+    def extract(self,origin_path):
+        self.data = pd.read_csv(origin_path)
+        
+
+    def transform(self):
         pass
 
-    def transform():
-        pass
-
-    def load(table_path):
+    def load(self,load_path):
         pass
 
 import logging
