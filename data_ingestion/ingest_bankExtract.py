@@ -16,18 +16,6 @@ class Pipeline:
     tranform()
     load()
     """
-    def get_userId_from_fileName(file_name):
-        """
-        Example usage:
-        input_string = "1_2.xls"
-        result = get_prefix_before_underscore(input_string)
-        print(result)  # Output will be: 1
-        """
-        underscore_index=file_name.find('_')
-        if underscore_index!=-1:
-            return file_name[:underscore_index]
-        else:
-            raise ValueError('file name is in the wrong format. There is no underscore')
 
 
 
