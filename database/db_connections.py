@@ -14,7 +14,7 @@ def get_database_connection(existDB=False, engine='psycopg2'):
     Engine: 'psycopg2' or 'sqlAlchemy
     Returns Tuple (conn,cursor) for psycopg and tupple (engine,connection) for sqlAlchemy
     """
-    if engine=='psycopg2'
+    if engine=='psycopg2':
         if existDB:
             # Connect to PostgreSQL (template1 database) to create a new database
             connection = psycopg2.connect(
