@@ -1,4 +1,5 @@
-# import pandas as pd
+import pandas as pd
+import tools
 class Pipeline:
     """Pipeline de ingestão de dados
      Attributes
@@ -21,8 +22,13 @@ class Pipeline:
 
     def __init__(self) -> None:
         self.df=None
+        self.client_id=None
+        self.account_id=None
     def extract(self,origin_path):
         self.data = pd.read_csv(origin_path)
+        file_name=''
+        self.client_id=tools.get_userId_from_fileName(file_name)
+        self.account_id=tools.get_accountId_from_fileName(file_name)
         
 
     def transform(self):

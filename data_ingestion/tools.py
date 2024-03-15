@@ -28,3 +28,19 @@ def get_accountId_from_fileName(file_name):
         raise ValueError('file name is in the wrong format. There is no dot')
     
 
+def get_fileName_from_filePath(file_path):
+    """
+    Function that gets fileName from filePath
+    Example
+    filePath='folder/folder/dados.jpg'
+    result=get_fileName_from_filePath(filePath)
+    print(result) # Output will be 'dados'
+    """
+    # Find the index of the last occurrence of '/'
+    last_slash_index = file_path.rfind('/')
+    
+    # If '/' exists, return the substring after it, otherwise return the whole string
+    if last_slash_index != -1:
+        return file_path[last_slash_index + 1:]
+    else:
+        return file_path
