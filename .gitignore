@@ -173,3 +173,4 @@ cython_debug/
 #Ignore files that has sensitve information
 2_*.xls
 data_ingestion/files/extract/2_1.xls
+data_ingestion/files/extratos/2_1.xlsx
