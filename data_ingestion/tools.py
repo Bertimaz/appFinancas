@@ -37,10 +37,12 @@ def get_fileName_from_filePath(file_path):
     print(result) # Output will be 'dados'
     """
     # Find the index of the last occurrence of '/'
-    last_slash_index = file_path.rfind('/')
+    last_slash_index = file_path.rfind('\\')
     
     # If '/' exists, return the substring after it, otherwise return the whole string
     if last_slash_index != -1:
         return file_path[last_slash_index + 1:]
     else:
         return file_path
+
+print(get_fileName_from_filePath('data_ingestion\\files\\extratos\\1_1.xlsx'))
