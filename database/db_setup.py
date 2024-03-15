@@ -79,7 +79,7 @@ class DatabaseManager:
             print('Schema dim Already Exists')
             logger.info('Schema dim Already Exists')
     
-        tables=['fato.transacao' ,'dim.usuario','dim.conta', 'dim.contaUsuario','dim.cartao','dim.cartaousuario']
+        tables=['fato.transacao' ,'dim.usuario','dim.conta', 'dim.contaUsuario','dim.cartao','dim.cartaousuario','gastos']
         
         # Deleting tables
         logger.info(f'Deleting tables:{tables}')
@@ -160,6 +160,7 @@ class DatabaseManager:
         # Create Table fato.transacao
         create_db_query = sql.SQL("CREATE TABLE fato.transacao ("
             " ID SERIAL PRIMARY KEY,"
+            " usuario_ID int REFERENCES dim.usuario,"
             " data DATE NOT NULL,"
             " ref_fonte VARCHAR(255) NOT NULL,"
             " ref VARCHAR(255),"
