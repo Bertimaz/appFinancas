@@ -4,7 +4,7 @@ import db_connections
 from psycopg2 import sql
 
 def update_entry(table_name,custom_condition, new_data):
-    """S
+    """
     Update an entry in the database based on a custom condition.
 
     Parameters:
@@ -26,7 +26,6 @@ def update_entry(table_name,custom_condition, new_data):
     set_columns=sql.SQL(', ').join(sql.SQL('{} = %s').format(sql.Identifier(col)) for col in new_data.keys()),
     conditions=sql.SQL(' AND ').join(sql.SQL('{} = %s').format(sql.Identifier(col)) for col in custom_condition.keys())
 )
-    print(query)
     # Execute the query
     cursor.execute(query, list(new_data.values()) + list(custom_condition.values()))
 
@@ -59,7 +58,6 @@ def create_user(nome_usuario,nome,cpf,senha,email):
         # Construct the SQL query based on the custom condition
         query = f"""INSERT INTO financas.dim.usuario  (nome_usuario,nome,cpf,senha,email)
         VALUES ('{nome_usuario}','{nome}', '{cpf}','{hashed_senha}','{email}')"""
-        print(query)
         cursor.execute(query)
         conn.commit()
         conn.close()

@@ -64,7 +64,6 @@ def validate_username(user_name):
   """
   conn,c=db_connections.get_database_connection(existDB=True)
   c.execute(f"Select nome_usuario from dim.usuario where nome_usuario='{user_name}'")
-
   # Get the number of entries
   num_entries = c.rowcount
   # Close the cursor and connection

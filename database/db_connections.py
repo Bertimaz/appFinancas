@@ -32,13 +32,12 @@ def get_database_connection(existDB=False, engine='psycopg2'):
                 user=config.databaseSuperUser['Username'],
                 password=config.databaseSuperUser['password']
             )
+            connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
          #Get Cursor
         cursor = connection.cursor()
         #Returns  connection and Cursor 
         return connection,cursor
-
-
-        connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+     
     elif engine=='sqlAlchemy':
         # Modify this line with your database URL
         db_url = 'postgresql://{}:{}@{}:{}/{}'.format(
@@ -53,34 +52,11 @@ def get_database_connection(existDB=False, engine='psycopg2'):
         connection = engine.connect()
         # Return the engine and connection
         return engine, connection
+    else:
+        raise ValueError('engine is not supported. Try sqlAlchemy or psycopg2')
+    
 
 
-
-
-   
-
-
-
-
-
-def get_database_connection(existDB=False):
-    """
-    Get connection to the database
-    Returns Tuple (engine, connection)
-    """
-    # Modify this line with your database URL
-    db_url = 'postgresql://{}:{}@{}:{}/{}'.format(
-        config.databaseSuperUser['Username'],
-        config.databaseSuperUser['password'],
-        config.databaseSuperUser['Server'],
-        config.databaseSuperUser['port'],
-        config.databaseSuperUser['db_name'] if existDB else ''
-    )
-
-    engine = create_engine(db_url)
-
-    connection = engine.connect()
-    # connection.
-
-    # Return the engine and connection
-    return engine, connection
+engine,connection=get_database_connection(existDB=True,engine='sqlAlchemy')
+# print(engine)
+                #   get_database_connection
